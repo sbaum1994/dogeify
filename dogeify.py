@@ -3,7 +3,7 @@ import string
 from random import randint
 from lxml import html
 import requests
-
+from random import sample
 
 """I want the data structure to link all the manys verys
 muchs suchs mosts etc. groups and then also link all of
@@ -45,7 +45,6 @@ class Dogeifier:
 			page = html.fromstring(requests.get(URL).text)
 			root = page.xpath('/html/body/div[2]/ul[1]/li[1]/b/text()')
 			if root:
-				print root
 				adj[0] = root[0]
 			else:
 				root = page.xpath('/html/body/div[2]/ul/li[1]/b/text()')
@@ -58,7 +57,6 @@ class Dogeifier:
 		return sentence_parse
 
 	def dogeify(self):
-		doge_translation = ''
 		if not self.doge_particles:
 			if self.s_plurs:
 				for n in self.s_plurs:
@@ -82,14 +80,19 @@ class Dogeifier:
 		if len(self.doge_particles) <= 0:
 			return ['Error no particles generated.']
 
-		return self.doge_particles
+		if len(self.doge_particles) > 3:
+				indices = sample(range(1, len(self.doge_particles)), 3)
+				self.sentence = self.doge_particles[indices[0]] + " " + self.doge_particles[indices[1]] + " " + self.doge_particles[indices[2]]
+		else:
+				self.sentence = self.doge_particles.join(" ")
+
+		return self.sentence
 
 	def prints(self):
 		print self.sentence
-		print self.s_nouns
 
 if __name__ == '__main__':
-	DM = Dogeifier('I ate chewy pancakes for breakfast today mice.')
-	print DM.dogeify()
-	"""translation = doge('')"""
-	print 'hello'
+	normalSentence = raw_input("Enter your sentence: ")
+	DM = Dogeifier(normalSentence)
+	DM.dogeify()
+	DM.prints()
